@@ -10,6 +10,7 @@ var http = require('http');
 var path = require('path');
 var MongoStore=require('connect-mongo')(express);//会话中间件
 var setting=require('./settings');
+var flash=require('connect-flash');//加载flash中间件
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser());//使用cookie解析中间件
+app.use(flash());//使用falsh中间件
 app.use(express.session({
     secret:setting.cookieSecret,
     key:setting.db,//cookie name
