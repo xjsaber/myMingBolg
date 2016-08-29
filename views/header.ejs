@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><%= title %></title>
+    <title>广垠</title>
     <!--<link rel='stylesheet' href='/stylesheets/bootstrap.css' />-->
     <link href="/stylesheets/bootstrap.css" rel="stylesheet">
     <link href="/stylesheets/font-awesome.min93e3.css" rel="stylesheet">
     <link href="/stylesheets/style.min862f.css" rel="stylesheet">
+    <style type="text/css">
+        .nav > li > a{
+
+        }
+    </style>
 </head>
 <body>
 <div id="wrapper">
@@ -16,7 +21,19 @@
                     <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
                         <i class="fa fa-reorder"></i>
                     </button>
-                    <a href="#" class="navbar-brand">Blog</a>
+                    <!--<a href="#" class="navbar-brand">Blog</a>-->
+                    <div class="row" style="margin: 5px 5px 5px 5px;">
+                        <div class="col-xs-4">
+                         <img src="/images/a8.jpg" alt="..." class="img-circle">
+                        </div>
+                        <div class="col-xs-8">
+                            <span>欢迎
+                                <%if(User){%>
+                                <span><%=User.name%></span>
+                                <%}%>
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div class="navbar-collapse collapse" id="navbar">
                     <ul class="nav navbar-nav">
@@ -76,9 +93,15 @@
                     </ul>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
+                            <%if(User){%>
                             <a href="#">
-                                <i class="fa fa-sign-out"></i> 登陆
+                                <i class="fa fa-sign-out"></i> 退出登录
                             </a>
+                            <%}else {%>
+                            <a href="singin">
+                                <i class="fa fa-sign-out"></i> 登 录
+                            </a>
+                            <%}%>
                         </li>
                     </ul>
                 </div>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css">
+    <link rel="stylesheet" href="/stylesheets/animate.min.css">
+    <style type="text/css">
+        input[type=text],input[type=password]{
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container text-center">
+<%include login.ejs%>
+</div>
+<%if(ErrorMsg){%>
+<script type="text/javascript">
+    window.onload=function () {
+        alert("<%=ErrorMsg%>");
+    }
+</script>
+<%}%>
+</body>
+</html>
