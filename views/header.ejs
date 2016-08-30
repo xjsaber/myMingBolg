@@ -7,8 +7,8 @@
     <link href="/stylesheets/font-awesome.min93e3.css" rel="stylesheet">
     <link href="/stylesheets/style.min862f.css" rel="stylesheet">
     <style type="text/css">
-        .nav > li > a{
-
+        .navbar-top-links li a:hover{
+            color: red;
         }
     </style>
 </head>
@@ -94,12 +94,15 @@
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
                             <%if(User){%>
-                            <a href="#">
+                            <a href="logout">
                                 <i class="fa fa-sign-out"></i> 退出登录
                             </a>
                             <%}else {%>
                             <a href="singin">
                                 <i class="fa fa-sign-out"></i> 登 录
+                            </a>
+                            <a href="reg">
+                                <i class="fa fa-sign-out"></i> 注 册
                             </a>
                             <%}%>
                         </li>

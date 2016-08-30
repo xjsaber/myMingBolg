@@ -11,12 +11,27 @@
 // }
 var crypto=require('crypto'),//加载加密模块
 	Error='',
+	Art=require('../models/ArticleMsg.js'),
 	User=require('../models/user.js');
 module.exports=function(app){
 	function crymd5(number) {
 		var md5=crypto.createHash('md5');
 		var respont=md5.update(number).digest('hex');
 		return respont;
+	}
+	function  checkloginin(req,res,next) {
+		if(!req.session.user){
+			Error='未登录';
+			res.redirect('/');
+		}
+		next();
+	}
+	function checkloginout(req,res,next) {
+		if (req.session.user){
+			Error='已登录';
+			res.redirect('back');
+		}
+		next();
 	}
 	// var data=['大牛','牛牛','小牛'];
 	// app.get('/',function(req,res){
@@ -26,25 +41,38 @@ module.exports=function(app){
 		// res.render('second',{title:data});
 	// })
 	app.get('/',function(req,res){
-		if (req.session.user){
-			res.render('index',{
-				title:'主页',
-				User:req.session.user
-			});
-		}
+         Art.get(function (err,arts) {
+			 if (req.session.user){
+				 res.render('index',{
+					 title:'主页',
+					 User:req.session.user,
+					 ErrorMsg:Error,
+					 Arts:arts
+				 });
+			 }else {
+				 console.log(arts);
+				 res.render('index',{
+					 title:'主页',
+					 User:null,
+					 ErrorMsg:Error,
+					 Arts:arts
+				 });
+			 }
+		 })
+
 
 	});
 	// app.get('/index',function(req,res){
 	// 	res.render('index',{title:'主页'});
 	// });
+	app.get('/reg',checkloginout);
 	app.get('/reg',function(req,res){
-		if (req.flash('error')){
 			res.render('reg',{
 				title:'注册',
-				ErrorMsg:req.flash('error').toString()
+				ErrorMsg:Error
 			});//get协议请求页面
-		}
 	});
+	app.post('/reg',checkloginout);
 	app.post('/reg',function(req,res){
 		//post协议提交注册信息
 		var uname=req.body.usernickname,
@@ -82,12 +110,14 @@ module.exports=function(app){
 			})
 		})
 	});
+	app.get('/singin',checkloginout);
 	app.get('/singin',function(req,res){
 			res.render('singin',{
 				title:'登陆',
 				ErrorMsg:Error
 			});
 	});
+	app.post('/singin',checkloginout);
 	app.post('/singin',function(req,res){
         var currentacc=req.body.loginacc,
 			currentpwd=req.body.loginpwd;
@@ -111,13 +141,36 @@ module.exports=function(app){
 			res.redirect('/');
 		})
 	});
+	app.get('/post',checkloginin);
 	app.get('/post',function(req,res){
-		res.render('post',{title:'发布'});
+		res.render('post',{
+			title:'发布',
+			User:req.session.user,
+			ErrorMsg:Error
+		});
 	});
+	app.post('/post',checkloginin);
 	app.post('/post',function(req,res){
-		
+		var title=req.body.title,
+			content=req.body.post,
+			account=req.session.user.account;
+        var artcilemsg=new Art({
+			useraccount:account,
+			title:title,
+			content:content
+		});
+		artcilemsg.save(function (err,art) {
+			if (err){
+				Error=err;
+				return res.redirect('/');
+			}
+			req.session.art=art;
+			res.redirect('/');
+		})
 	});
 	app.get('/logout',function(req,res){
-		
+		Error="";
+		req.session.user=null;
+		res.redirect('/');
 	});
 }

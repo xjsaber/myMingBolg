@@ -1,3 +1,8 @@
 <%-include header%>
-<p>主题</p>
+<%if (Arts){%>
+<%for (var i=0;i<Arts.length;i++){%>
+<p><%=Arts[i].title%></p>
+<p><%=Arts[i].content%></p>
+<p><%=Arts[i].time.day%></p>
+<%}}%>
 <%-include footer%>
