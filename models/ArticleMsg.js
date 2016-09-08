@@ -1,6 +1,8 @@
 var DB=require('./db');
+var markdown=require('markdown').markdown;
 function article(articlemodel) {
     this.articposter=articlemodel.useraccount;
+    this.articpostername=articlemodel.username;
     this.artictitle=articlemodel.title;
     this.articcontent=articlemodel.content;
 }
@@ -22,6 +24,7 @@ article.prototype.save=function (callback) {
         poster:this.articposter,
         title:this.artictitle,
         content:this.articcontent,
+        username:this.articpostername,
         time:time
     };
     //打开数据库连接
@@ -68,7 +71,38 @@ article.get=function (callback) {
                 if (err){
                     callback(err);
                 }
+                arts.forEach(function (art) {
+                    art.post=markdown.toHTML(art.post);
+                })
                 callback(null,arts);
+            })
+        })
+    })
+}
+//按条件查询
+article.getquery=function (name,callback) {
+    DB.open(function (err,mongo) {
+        if (err){
+          return  callback(err);
+        }
+        mongo.collection('Act',function (err,collection) {
+            if (err){
+                DB.close();
+                return callback(err);
+            }
+            var query={};
+            if (name){
+                query.name=name;
+            }
+            collection.find(query).sort({time:-1}).toArray(function (err,docs) {
+                DB.close();
+                if (err){
+                    return callback(err);
+                }
+                docs.forEach(function (doc) {
+                    doc.post=markdown.toHTML(doc.post);
+                })
+                callback(null,docs);
             })
         })
     })
