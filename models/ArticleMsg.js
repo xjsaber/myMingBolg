@@ -1,5 +1,30 @@
 var DB=require('./db');
+var ObjectID = require('mongodb').ObjectID;
 var markdown=require('markdown').markdown;
+// var markdown = require('markdown-js');
+String.prototype.format = function(args) {
+    var result = this;
+    if (arguments.length > 0) {
+        if (arguments.length == 1 && typeof (args) == "object") {
+            for (var key in args) {
+                if(args[key]!=undefined){
+                    var reg = new RegExp("({" + key + "})", "g");
+                    result = result.replace(reg, args[key]);
+                }
+            }
+        }
+        else {
+            for (var i = 0; i < arguments.length; i++) {
+                if (arguments[i] != undefined) {
+                    //var reg = new RegExp("({[" + i + "]})", "g");//这个在索引大于9时会有问题，谢谢何以笙箫的指出
+                    var reg= new RegExp("({)" + i + "(})", "g");
+                    result = result.replace(reg, arguments[i]);
+                }
+            }
+        }
+    }
+    return result;
+}
 function article(articlemodel) {
     this.articposter=articlemodel.useraccount;
     this.articpostername=articlemodel.username;
@@ -72,7 +97,10 @@ article.get=function (callback) {
                     callback(err);
                 }
                 arts.forEach(function (art) {
-                    art.post=markdown.toHTML(art.post);
+                    if(art){
+                        art.content=markdown.toHTML(art.content);
+                    }
+
                 })
                 callback(null,arts);
             })
@@ -80,7 +108,7 @@ article.get=function (callback) {
     })
 }
 //按条件查询
-article.getquery=function (name,callback) {
+article.getquery=function (aid,callback) {
     DB.open(function (err,mongo) {
         if (err){
           return  callback(err);
@@ -90,18 +118,22 @@ article.getquery=function (name,callback) {
                 DB.close();
                 return callback(err);
             }
-            var query={};
-            if (name){
-                query.name=name;
-            }
-            collection.find(query).sort({time:-1}).toArray(function (err,docs) {
+            // var query="{_id:ObjectId('{0}')}";
+            // if (aid){
+            //     query=query.format(aid);
+            //     console.log(query);
+            // }
+            collection.find({_id:ObjectID(aid)}).sort({time:-1}).toArray(function (err,docs) {
                 DB.close();
                 if (err){
                     return callback(err);
                 }
+                console.log(docs);
                 docs.forEach(function (doc) {
-                    doc.post=markdown.toHTML(doc.post);
-                })
+                    if (doc){
+                        doc.content=markdown.toHTML(doc.content);
+                    }
+                });
                 callback(null,docs);
             })
         })
