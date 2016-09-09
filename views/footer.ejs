@@ -21,6 +21,13 @@
     if ('<%=ErrorMsg%>'){
         alert('<%=ErrorMsg%>');
     }
+    $(function () {
+        $('.panel-heading').hover(function () {
+            $(".posttitle").animate({margin:"0 0 0 50px",color:"white"},1000);
+        },function () {
+            $(".posttitle").animate({margin:"0px"},1000);
+        });
+    })
 </script>
 </body>
 </html>

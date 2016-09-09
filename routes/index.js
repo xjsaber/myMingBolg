@@ -12,7 +12,9 @@
 var crypto=require('crypto'),//加载加密模块
 	Error='',
 	Art=require('../models/ArticleMsg.js'),
-	User=require('../models/user.js');
+	User=require('../models/user.js'),
+	http = require('http'),
+    blogURL = require('url');
 module.exports=function(app){
 	function crymd5(number) {
 		var md5=crypto.createHash('md5');
@@ -153,9 +155,11 @@ module.exports=function(app){
 	app.post('/post',function(req,res){
 		var title=req.body.title,
 			content=req.body.post,
+            uname=req.session.user.name,
 			account=req.session.user.account;
         var artcilemsg=new Art({
 			useraccount:account,
+            username:uname,
 			title:title,
 			content:content
 		});
@@ -173,4 +177,23 @@ module.exports=function(app){
 		req.session.user=null;
 		res.redirect('/');
 	});
+	app.get('/Artdetail',function (req,res) {
+		// console.log(req.query.aid);
+		var urljson=req.query;
+		if (urljson){
+			Art.getquery(urljson.aid,function (err,art) {
+				res.render('Artdetail',{
+					title:'detail',
+					Arttitle:art[0].title,
+					Artbody:art[0].content,
+					nickname:art[0].username,
+					posttime:art[0].time.day
+				});
+			});
+		}
+
+	})
+	app.post('/Artdetail',function (req,res) {
+		
+	})
 }

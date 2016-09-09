@@ -1,8 +1,33 @@
 <%-include header%>
 <%if (Arts){%>
 <%for (var i=0;i<Arts.length;i++){%>
-<p><%=Arts[i].title%></p>
-<p><%=Arts[i].content%></p>
-<p><%=Arts[i].time.day%></p>
+<div class="panel panel-info">
+    <div class="panel-heading"><span class="posttitle" ><a href="Artdetail?aid=<%=Arts[i]._id%>">
+            <%if (Arts[i].title.length>20){%>
+            <%= Arts[i].title.substring(0,20)+'......'%>
+            <%}else {%>
+            <%= Arts[i].title%>
+            <%}%>
+        </a>
+        </span>
+    </div>
+    <div class="panel-body">
+        <!--<%if(Arts[i].content){%>-->
+        <!--<%}%>-->
+        <%if (Arts[i].content.length>350){%>
+        <%= Arts[i].content.substring(0,350)+'......'%>
+        <%}else {%>
+        <%- Arts[i].content+'......' -%>
+        <%}%>
+    </div>
+    <div class="panel-footer">
+        <%if (Arts[i].username){%>
+        <a href="#"><%=Arts[i].username%></a>
+        <%}else {%>
+        <a href="#">佚名</a>
+        <%}%>
+        <span>发布于<%=Arts[i].time.minute%></span>
+    </div>
+</div>
 <%}}%>
 <%-include footer%>
